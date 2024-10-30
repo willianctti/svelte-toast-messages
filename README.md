@@ -1,108 +1,174 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or — if you want a full-fledged app framework — use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
 
----
+# svelte-toast-messages
 
-# svelte app
+A lightweight and flexible toast notification library for Svelte, featuring multiple toast types, positioning options, and promise support.
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+## Instalation
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+  ```
+   npm install svelte-toast-messages
+   ```
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
+## Basic Setup 
+
+Add the ToastList component to your app's root (typically App.svelte):
+
+```
+<script>
+  import { ToastList } from 'svelte-toast-messages';
+</script>
+
+<!-- Your app content -->
+
+<ToastList />
+```
+## Usage
+Basic Toasts
+```
+import { toast } from 'svelte-toast-messages';
+
+// Success toast
+toast.success('Operation successful!', {
+  position: 'top-right',
+  duration: 3000
+});
+
+// Error toast
+toast.error('Something went wrong!', {
+  position: 'bottom-right',
+  duration: 5000
+});
 ```
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+## Promise Toast
+Perfect for async operations:
 
-
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
-npm install
+```
+const myAsyncOperation = async () => {
+  try {
+    await toast.promise(
+      fetchData(), // Your promise
+      {
+        loading: 'Loading data...',
+        success: 'Data loaded successfully!',
+        error: 'Error loading data'
+      },
+      { position: 'bottom-right' }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
 ```
 
-...then start [Rollup](https://rollupjs.org):
-
-```bash
-npm run dev
+## Multiple Toasts
+The library handles multiple toasts gracefully (maximum 5 at once):
+```
+function showMultipleToasts() {
+  toast.success('First toast', { position: 'top-right' });
+  toast.error('Second toast', { position: 'top-left' });
+  toast.success('Third toast', { position: 'bottom-right' });
+}
 ```
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+## Configuration Options
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+### Position
+- `top-right` (default)
+- `top-left`
+- `bottom-right`
+- `bottom-left`
 
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
+### Duration
+- Default: `3000ms` (3 seconds)
+- Min: `1000ms` (1 second)
+- Max: `10000ms` (10 seconds)
+- Loading toasts: `Infinite` (automatically dismissed when promise resolves)
 
-## Building and running in production mode
+## Toast Options Interface
 
-To create an optimised version of the app:
-
-```bash
-npm run build
+```
+interface ToastOptions {
+  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+  duration?: number; // in milliseconds
+}
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+## Features
 
+### Core Features
+- 🎨 **Multiple Toast Types**
+  - Success notifications
+  - Error messages
+  - Loading states
 
-## Single-page app mode
+- 📍 **Flexible Positioning**
+  - Four corner positions
+  - Customizable placement
+  - Automatic stacking
 
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
+- ⚡ **Promise Integration**
+  - Automatic state management
+  - Loading → Success/Error transitions
+  - Built-in error handling
 
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
+### Advanced Features
+- 🔄 **Queue Management**
+  - Maximum 5 toasts at once
+  - Automatic oldest toast removal
+  - Smart positioning system
 
-```js
-"start": "sirv public --single"
-```
+- 💨 **Animations**
+  - Smooth fade in/out
+  - Fly animation effects
+  - Configurable durations
 
-## Using TypeScript
+- 🎯 **Developer Experience**
+  - Full TypeScript support
+  - Type definitions included
 
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
+  ## Examples
+  ### Form submission example 
 
-```bash
-node scripts/setupTypeScript.js
-```
+  ```
+    async function handleFormSubmit() {
+    const submitForm = new Promise((resolve) => {
+        setTimeout(() => resolve({ success: true }), 2000);
+    });
 
-Or remove the script via:
+  try {
+    await toast.promise(
+      submitForm,
+      {
+        loading: 'Submitting form...',
+        success: 'Form submitted!',
+        error: 'Error submitting form'
+      },
+      { position: 'bottom-right' }
+    );
+  } catch (error) {
+    console.error(error);
+  }
 
-```bash
-rm scripts/setupTypeScript.js
-```
+## Support & Contributing
 
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
+### Browser Support
+✅ Works in all modern browsers that support ES6:
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
-## Deploying to the web
+### License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### With [Vercel](https://vercel.com)
+### Contributing
+We welcome contributions! Here's how you can help:
 
-Install `vercel` if you haven't already:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
-# svelte-toast-messages-
+Feel free to check the [issues page](https://github.com/willianctti/svelte-toast-messages/issues) if you want to contribute.
