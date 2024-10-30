@@ -27,7 +27,6 @@
       toast.success('Terceiro toast', { position: 'bottom-right' });
       toast.error('Quarto toast', { position: 'bottom-left' });
       toast.success('Quinto toast', { position: 'top-right' });
-      // Este sexto toast substituirá o mais antigo devido ao limite
       toast.error('Sexto toast', { position: 'top-left' });
     }
   </script>
