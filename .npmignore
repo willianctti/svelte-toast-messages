@@ -1,0 +1,8 @@
+/src
+/tests
+.gitignore
+.prettierrc
+tsconfig.json
+svelte.config.js
+rollup.config.js
+*.test.*
